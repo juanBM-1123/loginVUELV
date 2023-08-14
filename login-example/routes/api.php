@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\MascotaController;
 use App\Http\Controllers\PedidosController;
+use App\Http\Controllers\VehiculosController;
 
 //use App\Http\Controllers\AuthController;
 
@@ -24,12 +25,19 @@ use App\Http\Controllers\PedidosController;
 //    return $request->user();
 //});
 
-Route::middleware(['auth:sanctum'])->group(
+Route::middleware(['auth:sanctum','role:gerente'])->group(
     function (){
         Route::get('mascotas',[MascotaController::class,"index"]);
         Route::post("logout",[LoginController::class,"logout"]);
-        Route::get('pedidos',[PedidosController::class,"index"]);
+        //Route::get('pedidos',[PedidosController::class,"index"]);
         /* Investigar que hace la instruccion NombreClase::class */
+        Route::get("vehiculos",[VehiculosController::class,"index"]);
     }
 );
+Route::middleware(["auth:sanctum","role:cajero|gerente"])->group(
+    function(){
+        Route::get('pedidos',[PedidosController::class,"index"]);
+    }
+);
+
 Route::post("login",[LoginController::class,"authenticate"]);
